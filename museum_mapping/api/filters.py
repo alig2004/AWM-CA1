@@ -31,7 +31,7 @@ class MuseumFilter(filters.FilterSet):
     museum_type = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('muesum_type').choices)
 
     #filter by days closed/open
-    days_closed = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('days_closed').choices)
+    #days_closed = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('days_closed').choices)
 
     class Meta:
         model = Museum

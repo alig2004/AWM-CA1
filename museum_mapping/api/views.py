@@ -62,12 +62,14 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(museum_type=museum_type)
 
         #days closed/open filter
+        """
         days_closed = self.request.query_params.get("days_closed")
 
         if days_closed:
             queryset = queryset.filter(days_closed=days_closed)
 
         return queryset
+        """
 
     def list(self, request, *args, **kwargs):
         #overrides list to return proper GeoJSON FeatureCollection
@@ -116,9 +118,7 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
             point = Point(float(lng), float(lat), srid=4326)
             distance_m = float(distance_km) * 1000
 
-            nearby_museums = Museum.objects.filter(location__distance_lte=(point, distance_m))
-                .annotate(distance=Distance('location', point))
-                .order_by('distance')
+            nearby_museums = Museum.objects.filter(location__distance_lte=(point, distance_m)).annotate(distance=Distance('location', point)).order_by('distance')
             
             serializer = self.get_serializer(nearby_museums, many=True)
             

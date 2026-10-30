@@ -18,5 +18,5 @@ class MuseumSerializer(GeoFeatureModelSerializer):
             'admission',
             'established',
             'museum_type',
-            'days_closed',
+            #'days_closed',
         ]
