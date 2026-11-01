@@ -1,6 +1,6 @@
 import requests
 import json
-from datatime import datetime
+from datetime import datetime
 
 class EuropeanMuseumAPITester:
     def __init__(self, base_url="http://localhost:8000"):
@@ -172,7 +172,7 @@ class EuropeanMuseumAPITester:
             return False
 
         results = {
-            'cities': self.test_cities_endpoint(),
+            'cities': self.test_museums_endpoint(),
             #'statistics': self.test_statistics_endpoints(),
             'filtering': self.test_filtering()
         }

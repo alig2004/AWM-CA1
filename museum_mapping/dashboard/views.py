@@ -7,9 +7,9 @@ def index(request):
     #main dashboard view
     context = {
         'total_museums': Museum.objects.count(),
-        'total_cities': Museum.objects.values_list('city', flat=True).distinct().order_by('city'),
-        'total_countries': Museum.objects.values_list('country', flat=True).distinct().order_by('country'),
-        'museum_types': [choice[0] for choice in Museum._meta.get_field('museum_type')],
+        'total_cities': Museum.objects.values_list('city', flat=True).distinct().count(),
+        'total_countries': Museum.objects.values_list('country', flat=True).distinct().count(),
+        'museum_types': [choice[0] for choice in Museum._meta.get_field('museum_type').choices],
     }
     
     return render(request, 'dashboard/index.html', context)

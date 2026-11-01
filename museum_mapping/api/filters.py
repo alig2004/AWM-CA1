@@ -3,56 +3,47 @@ from django_filters import rest_framework as filters
 from museums.models import Museum
 
 class MuseumFilter(filters.FilterSet):
-    #filter by city
-    city = filters.CharFilter(field_name="city", lookup_expr="icontains") #getting museums by city
+    # visitors filters
+    visitors_min = filters.NumberFilter(field_name="visitors", lookup_expr='gte')
+    visitors_max = filters.NumberFilter(field_name="visitors", lookup_expr='lte')
+    visitors_range = filters.RangeFilter(field_name="visitors")
 
-    #filter by country
-    country = filters.CharFilter(field_name="country", lookup_expr="icontains") #getting museums by country
+    # admission filters
+    admission_min = filters.NumberFilter(field_name="admission", lookup_expr='gte')
+    admission_max = filters.NumberFilter(field_name="admission", lookup_expr='lte')
+    #unemployment_max = filters.NumberFilter(field_name="unemployment_rate", lookup_expr='lte')
 
-    #filter by visitors
-    visitors_min = filters.NumberFilter(field_name="visitors", lookup_expr="gte") #getting lowest attendance
-    visitors_max = filters.NumberFilter(field_name="visitors", lookup_expr="lte") #getting highest attendance
-    visitors_range = filters.RangeFilter(field_name="visitors") #getting ranges of attendance 
+    # established filters
+    established_min = filters.NumberFilter(field_name="established", lookup_expr='gte')
+    established_max = filters.NumberFilter(field_name="established", lookup_expr='lte')
 
-    #filter by admission
-    admission_min = filters.NumberFilter(field_name="admission", lookup_expr="gte") #getting highest admission
-    admission_max = filters.NumberFilter(field_name="admission", lookup_expr="lte") #getting lowest admission
-    admission = filters.NumberFilter(field_name="admission", lookup_expr="exact") #getting museums with specific admission price
-    cheaper_than = filters.BooleanFilter(method="filter_cheaper_than") #filter by admission below a certain number
+    # Geographic filters
+    city = filters.CharFilter(lookup_expr='icontains')
+    country = filters.CharFilter(lookup_expr='icontains')
 
-    #filter by establishment year
-    established = filters.NumberFilter(field_name="established", lookup_expr="exact") #getting museums established in a specific year
-    established_old = filters.NumberFilter(field_name="established", lookup_expr="lte") #getting oldest established museums
-    established_new = filters.NumberFilter(field_name="established", lookup_expr="gte") #getting most recently established museums
-    older_than = filters.BooleanFilter(method="filter_older_than") #filter by establishment earlier than a certain year
-    newer_than = filters.BooleanFilter(method="filter_newer_than") #filter by establishment later than a certain year
+    # Multiple choice filters
+    museum_type = filters.MultipleChoiceFilter(choices=City._meta.get_field('museum_type').choices)
 
-    #filter by type
-    museum_type = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('muesum_type').choices)
-
-    #filter by days closed/open
-    #days_closed = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('days_closed').choices)
+    # Custom method filters
+    large_museums = filters.BooleanFilter(method='filter_large_museums')
+    free = filters.BooleanFilter(method='filter_free_museums')
 
     class Meta:
-        model = Museum
+        model = City
         fields = {
             'name': ['icontains', 'istartswith'],
+            'population_year': ['exact', 'gte', 'lte'],
             'elevation': ['gte', 'lte'],
         }
 
-    def filter_cheaper_than(self, queryset, name, value, price):
-        #filters for museums with admission less than the given price
+    def filter_large_museums(self, queryset, name, value):
+        """Filter for museums with visitors > 150,000 """
         if value:
-            return queryset.filter(admission__lte=price)
-        return queryset
-    
-    def filter_older_than(self, queryset, name, value, year):
-        #filters for museums established earlier than the given year
-        if value:
-            return queryset.filter(established__lte=year)
+            return queryset.filter(visitors__gte=150000)
         return queryset
 
-    def filter_newer_than(self, queryset, name, value, year):
+    def filter_free_museums(self, queryset, name, value):
+        """Filter for museums with admission = 0 """
         if value:
-            return queryset.filter(established__gte=year)
+            return queryset.filter(admission__lte=0.0)
         return queryset

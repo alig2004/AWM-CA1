@@ -5,7 +5,7 @@ from museums.models import Museum
 class MuseumSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Museum
-        geo_field = 'location'
+        geo_field = "location"
         fields = [
             'name',
             'city',
@@ -18,5 +18,4 @@ class MuseumSerializer(GeoFeatureModelSerializer):
             'admission',
             'established',
             'museum_type',
-            #'days_closed',
         ]
