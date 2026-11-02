@@ -25,6 +25,16 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
         if visitors_max:
             queryset = queryset.filter(visitors__lte=visitors_max)
 
+
+        # visitors filters
+        admission_min = self.request.query_params.get('admission_min')
+        admission_max = self.request.query_params.get('admission_max')
+
+        if admission_min:
+            queryset = queryset.filter(admission__gte=admission_min)
+        if admission_max:
+            queryset = queryset.filter(admission__lte=admission_max)
+
         # Category filters
         city = self.request.query_params.get('city')
         museum_type = self.request.query_params.get('museum_type')
@@ -94,36 +104,5 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             return Response(
                 {'error': 'Invalid coordinates or distance'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-    @action(detail=False, methods=['post'])
-    def within_bounds(self, request):
-        """Find cities within bounding box"""
-        data = request.data
-        required_fields = ['west', 'south', 'east', 'north']
-
-        if not all(field in data for field in required_fields):
-            return Response(
-                {'error': f'Required fields: {required_fields}'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            west, south, east, north = [float(data[field]) for field in required_fields]
-
-            museums_in_bounds = Museum.objects.filter(
-                latitude__gte=south,
-                latitude__lte=north,
-                longitude__gte=west,
-                longitude__lte=east
-            )
-
-            serializer = self.get_serializer(museums_in_bounds, many=True)
-            return Response(serializer.data)
-
-        except (ValueError, TypeError):
-            return Response(
-                {'error': 'Invalid bounding box coordinates'},
                 status=status.HTTP_400_BAD_REQUEST
             )

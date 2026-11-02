@@ -11,7 +11,7 @@ class MuseumFilter(filters.FilterSet):
     # admission filters
     admission_min = filters.NumberFilter(field_name="admission", lookup_expr='gte')
     admission_max = filters.NumberFilter(field_name="admission", lookup_expr='lte')
-    #unemployment_max = filters.NumberFilter(field_name="unemployment_rate", lookup_expr='lte')
+    admission_range = filters.RangeFilter(field_name="admission")
 
     # established filters
     established_min = filters.NumberFilter(field_name="established", lookup_expr='gte')
