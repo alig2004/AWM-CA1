@@ -21,7 +21,7 @@ class Museum(models.Model):
     #geographic data
     latitude = models.FloatField()
     longitude = models.FloatField()
-    location = models.PointField(srid=4326)
+    location = models.PointField(srid=4326, null=True, blank=True, spatial_index=True,)
     elevation = models.IntegerField(null=True, blank=True)
 
     #other information

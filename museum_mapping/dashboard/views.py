@@ -10,6 +10,7 @@ def index(request):
         'total_cities': Museum.objects.values_list('city', flat=True).distinct().count(),
         'total_countries': Museum.objects.values_list('country', flat=True).distinct().count(),
         'museum_types': [choice[0] for choice in Museum._meta.get_field('museum_type').choices],
+        'cities': Museum.objects.values_list('city', flat=True).distinct(),
     }
     
     return render(request, 'dashboard/index.html', context)

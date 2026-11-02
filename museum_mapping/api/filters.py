@@ -22,17 +22,16 @@ class MuseumFilter(filters.FilterSet):
     country = filters.CharFilter(lookup_expr='icontains')
 
     # Multiple choice filters
-    museum_type = filters.MultipleChoiceFilter(choices=City._meta.get_field('museum_type').choices)
+    museum_type = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('museum_type').choices)
 
     # Custom method filters
     large_museums = filters.BooleanFilter(method='filter_large_museums')
     free = filters.BooleanFilter(method='filter_free_museums')
 
     class Meta:
-        model = City
+        model = Museum
         fields = {
             'name': ['icontains', 'istartswith'],
-            'population_year': ['exact', 'gte', 'lte'],
             'elevation': ['gte', 'lte'],
         }
 

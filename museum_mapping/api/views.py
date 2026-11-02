@@ -16,23 +16,23 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = Museum.objects.all()
 
-        # Population filters
+        # visitors filters
         visitors_min = self.request.query_params.get('visitors_min')
         visitors_max = self.request.query_params.get('visitors_max')
 
         if visitors_min:
-            queryset = queryset.filter(population__gte=visitors_min)
+            queryset = queryset.filter(visitors__gte=visitors_min)
         if visitors_max:
-            queryset = queryset.filter(population__lte=visitors_max)
+            queryset = queryset.filter(visitors__lte=visitors_max)
 
         # Category filters
         city = self.request.query_params.get('city')
-        mueseum_type = self.request.query_params.get('mueseum_type')
+        museum_type = self.request.query_params.get('museum_type')
 
         if city:
             queryset = queryset.filter(city=city)
-        if mueseum_type:
-            queryset = queryset.filter(mueseum_type=mueseum_type)
+        if museum_type:
+            queryset = queryset.filter(museum_type=museum_type)
 
         return queryset
 
@@ -86,7 +86,7 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
                 location__distance_lte=(point, distance_m)
             ).annotate(
                 distance=Distance('location', point)
-            ).order_by('distance')
+            ).order_by('distance')[1:11]
 
             serializer = self.get_serializer(nearby_museums, many=True)
             return Response(serializer.data)
