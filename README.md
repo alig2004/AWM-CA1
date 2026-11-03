@@ -16,11 +16,11 @@
 
 7. Add to database <br>
    To add to the database the first time or add further entries:
-   `docker compose run --rm web python manage.py populate_museums --count [c]`
+   `docker compose run --rm web python manage.py populate_museums --count [c]`<br>
      Where [c] is the number of museums to be added to the database
 
    To clear the database and re-add entries:
-   `docker compose run --rm web python manage.py populate_museums --clear --count [c]`
+   `docker compose run --rm web python manage.py populate_museums --clear --count [c]`<br>
      Where [c] is the number of museums to be added to the database
    
 8. Launch the site<br>
