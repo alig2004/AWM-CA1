@@ -109,7 +109,7 @@ Within the following screenshots, a database of 100 museums has been loaded in. 
 
 # Issues and limitations
 1. Unable to read opening and closing hours <br>
-   <img width="303" height="47" alt="image" src="https://github.com/user-attachments/assets/ea136a43-6e7b-4802-84b2-5b60fd4d0fee" />
+   <img width="303" height="47" alt="image" src="https://github.com/user-attachments/assets/ea136a43-6e7b-4802-84b2-5b60fd4d0fee" /><br>
    Opening and closing hours don't appear, instead showing as Unknown
 
 2. Only one spatial query - nearby() <br>
