@@ -10,8 +10,8 @@
    `docker compose build`<br>
    `docker compose up`
 6. Check that all aspects are running<br>
-   `docker compose ps`
-   This should return something like the following:
+   `docker compose ps`<br>
+   This should return something like the following:<br>
    <img width="1890" height="147" alt="image" src="https://github.com/user-attachments/assets/1e69ba3a-12c1-43b3-bd17-38e2b705fe1a" />
 
 7. Add to database <br>
