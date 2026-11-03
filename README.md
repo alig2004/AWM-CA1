@@ -15,37 +15,37 @@
    <img width="1890" height="147" alt="image" src="https://github.com/user-attachments/assets/1e69ba3a-12c1-43b3-bd17-38e2b705fe1a" />
 
 7. Add to database <br>
-   To add to the database the first time or add further entries:
+   To add to the database the first time or add further entries:<br>
    `docker compose run --rm web python manage.py populate_museums --count [c]`<br>
      Where [c] is the number of museums to be added to the database
 
-   To clear the database and re-add entries:
+   To clear the database and re-add entries:<br>
    `docker compose run --rm web python manage.py populate_museums --clear --count [c]`<br>
      Where [c] is the number of museums to be added to the database
    
 8. Launch the site<br>
-   Open your browser and input the following URL:
+   Open your browser and input the following URL:<br>
    `localhost:8000`
 
 # Technology stack
-Python
-Django
-Django REST framework
-Django REST framework GIS
-PostGreSQL
-PostGIS
-HTML
-CSS
-JavaScript
-Bootstrap
-GeoJSON
-Docker
-Git/Github
-PGAdmin
-Leaflet
-Django Environ
-drf-spectacular
-pytest
+Python<br>
+Django<br>
+Django REST framework<br>
+Django REST framework GIS<br>
+PostGreSQL<br>
+PostGIS<br>
+HTML<br>
+CSS<br>
+JavaScript<br>
+Bootstrap<br>
+GeoJSON<br>
+Docker<br>
+Git/Github<br>
+PGAdmin<br>
+Leaflet<br>
+Django Environ<br>
+drf-spectacular<br>
+pytest<br>
 
 # Screenshots
 Within the following screenshots, a database of 100 museums has been loaded in. 21 of these are based of pre-input details from populate_museums.py, the other 79 are randomised.
