@@ -1,20 +1,20 @@
 # Application description and features
 
 # Set-up instructions
-1. Clone this repository
+1. Clone this repository<br>
    `git clone https://github.com/alig2004/AWM-CA1.git`
 2. Navigate to the clone
 3. Navigate into museums_mapping folder
 4. Launch docker
-5. Build the container
+5. Build the container<br>
    `docker compose build`
    `docker compose up`
-6. Check that all aspects are running
+6. Check that all aspects are running<br>
    `docker compose ps`
    This should return something like the following:
    <img width="1890" height="147" alt="image" src="https://github.com/user-attachments/assets/1e69ba3a-12c1-43b3-bd17-38e2b705fe1a" />
 
-7. Add to database
+7. Add to database <br>
    To add to the database the first time or add further entries:
    `docker compose run --rm web python manage.py populate_museums --count [c]`
      Where [c] is the number of museums to be added to the database
@@ -23,7 +23,7 @@
    `docker compose run --rm web python manage.py populate_museums --clear --count [c]`
      Where [c] is the number of museums to be added to the database
    
-8. Launch the site
+8. Launch the site<br>
    Open your browser and input the following URL:
    `localhost:8000`
 
@@ -108,12 +108,12 @@ Within the following screenshots, a database of 100 museums has been loaded in. 
 <img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/b258bcef-984b-4d9a-bfeb-c7f6843ff938" />
 
 # Issues and limitations
-1. Unable to read opening and closing hours
+1. Unable to read opening and closing hours <br>
    <img width="303" height="47" alt="image" src="https://github.com/user-attachments/assets/ea136a43-6e7b-4802-84b2-5b60fd4d0fee" />
    Opening and closing hours don't appear, instead showing as Unknown
 
-2. Only one spatial query - nearby()
+2. Only one spatial query - nearby() <br>
    I was unable to find enough time to get multiple spatial queries working, therefore only one exists. Given more time I was going to implement a way to set a bounding box and find museums within this space, but this idea had to be scrapped.
 
-3. Minimal real data
+3. Minimal real data <br>
    Due to a lack of datasets, the only real museum data I was able to add to populate_museums.py were 21 Irish museums, with the rest being randomly generated. Given enough time I would have liked to do other European museums, but the lack or pre-formatted data made this difficult and ultimately not worth the time.
