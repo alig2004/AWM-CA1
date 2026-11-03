@@ -117,3 +117,9 @@ Within the following screenshots, a database of 100 museums has been loaded in. 
 
 3. Minimal real data <br>
    Due to a lack of datasets, the only real museum data I was able to add to populate_museums.py were 21 Irish museums, with the rest being randomly generated. Given enough time I would have liked to do other European museums, but the lack or pre-formatted data made this difficult and ultimately not worth the time.
+
+# Architecture diagram
+<img width="565" height="698" alt="image" src="https://github.com/user-attachments/assets/57161dfb-5092-463c-a2d4-f000fcd98396" />
+
+# Database schema
+<img width="765" height="343" alt="image" src="https://github.com/user-attachments/assets/52ad435f-5cdc-4d54-8607-e9fe21b14a0b" />
