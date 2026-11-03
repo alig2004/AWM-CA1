@@ -25,8 +25,7 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
         if visitors_max:
             queryset = queryset.filter(visitors__lte=visitors_max)
 
-
-        # visitors filters
+        # admission filters
         admission_min = self.request.query_params.get('admission_min')
         admission_max = self.request.query_params.get('admission_max')
 
@@ -34,6 +33,15 @@ class MuseumViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(admission__gte=admission_min)
         if admission_max:
             queryset = queryset.filter(admission__lte=admission_max)
+
+        # establishment filters
+        established_min = self.request.query_params.get('established_min')
+        established_max = self.request.query_params.get('established_max')
+
+        if established_min:
+            queryset = queryset.filter(established__gte=established_min)
+        if established_max:
+            queryset = queryset.filter(established__lte=established_max)
 
         # Category filters
         city = self.request.query_params.get('city')

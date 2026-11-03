@@ -96,8 +96,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"Error creating {name}: {e}"))
 
 
-        #for random generation, will need to be edited
-        
+        #for random generation
         if created_count < count:
             additional_needed = count - created_count
             self.stdout.write(f"Generating {additional_needed} additional museums...")
@@ -125,7 +124,7 @@ class Command(BaseCommand):
                 lat = random.uniform(35.0, 70.0)  # European latitude range
                 lng = random.uniform(-10.0, 30.0)  # European longitude range
 
-                visitors = random.randint(5000, 300000)
+                visitors = random.randint(500, 300000)
 
                 try:
                     # Use get_or_create and only include fields that exist
@@ -144,6 +143,11 @@ class Command(BaseCommand):
                         museum_data['admission'] = random.uniform(0.00, 25.00)
                     if 'established' in model_fields:
                         museum_data['established'] = random.randint(1800, 2026)
+                    if 'time_opened' in model_fields:
+                        museum_data['time_opened'] = f"{random.randint(00, 23)}:{random.randint(00, 59)}"
+                    if 'time_closed' in model_fields:
+                        museum_data['time_closed'] = f"{random.randint(00, 23)}:{random.randint(00, 59)}"
+                        
 
                     museum, created = Museum.objects.get_or_create(
                         name=museum_name,

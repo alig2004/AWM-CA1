@@ -30,9 +30,8 @@ class Museum(models.Model):
     established = models.IntegerField() #year of establishment
     museum_type = models.CharField(max_length=30, choices=MUSEUM_TYPE_CHOICE, default='history') #type of museum
     
-    #days_closed = models.CharField(max_length=10, choices=DAYS_CLOSED_TYPE, default='n') #days of the week where museum is closed
-    time_opened = models.CharField(max_length=5) #time museum opens (could be changed?? might be able to make these dependant on day with enough time)
-    time_closed = models.CharField(max_length=5) #time museum closes (do these need to be changed to account for timezones?? or can i just say local??)
+    time_opened = models.CharField(max_length=5) 
+    time_closed = models.CharField(max_length=5) 
 
     def save(self, *args, **kwargs):
         if self.latitude is not None and self.longitude is not None:

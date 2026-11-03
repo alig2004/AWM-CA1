@@ -70,16 +70,6 @@
                         <input type="checkbox" id="show-museums" checked>
                         <label for="show-museums">Show All Museums</label>
                     </div>
-
-                    <div class="layer-toggle">
-                        <input type="checkbox" id="show-large" checked>
-                        <label for="show-large">Show Large Museums</label>
-                    </div>
-
-                    <div class="layer-toggle">
-                        <input type="checkbox" id="show-free" checked>
-                        <label for="show-free">Show Free Museums</label>
-                    </div>
                 </div>
 
                 <div class="filter-section">
@@ -109,6 +99,22 @@
 
                             <div class="col-6">
                                 <input type="number" id="admission-max" class="form-control form-control-sm" placeholder="Max">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h6>Establishment Filters</h6>
+                    <div class="mb-2">
+                        <label class="form-label">Museum Establishment Range</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" id="established-min" class="form-control form-control-sm" placeholder="Min" value="0">
+                            </div>
+
+                            <div class="col-6">
+                                <input type="number" id="established-max" class="form-control form-control-sm" placeholder="Max">
                             </div>
                         </div>
                     </div>
@@ -240,8 +246,6 @@
 
         // Data layers
         let museumsLayer = L.layerGroup().addTo(map);
-        let largeLayer = L.layerGroup().addTo(map);
-        let freeLayer = L.layerGroup().addTo(map);
         console.log('Data layers initialized');
 
         // Current data
@@ -486,7 +490,7 @@
                             <p><strong>Country:</strong> ${props.country || 'Unknown'}</p>
                             <p><strong>Visitors:</strong> ${visitors.toLocaleString()}</p>
                             <p><strong>Type:</strong> ${props.museum_type || 'Unknown'}</p>
-                            <p><strong>Admission price:</strong> €${props.admission || 'Unknown'}</p>
+                            <p><strong>Admission price:</strong> €${props.admission.toFixed(2) || 'Unknown'}</p>
                             <p><strong>Established:</strong> ${props.established || 'Unknown'}</p>
                             <p><strong>Opening Hours:</strong> ${props.time_opened || 'Unknown'} - ${props.time_closed || 'Unknown'}</p>
                         </div>
@@ -514,218 +518,6 @@
             console.log(` Successfully displayed ${displayed} museums`);
         }
 
-        // Display functions - large museums
-        function displayLargeMuseums(museums) {
-            console.log('Displaying museums:', museums.length);
-            largeLayer.clearLayers();
-
-            if (!Array.isArray(museums)) {
-                console.warn('Museums data is not an array:', museums);
-                return;
-            }
-
-            let displayed = 0;
-
-            museums.forEach((museum, index) => {
-                try {
-                    let coords = null;
-                    let props = null;
-
-                    // Handle GeoJSON format
-                    if (museum.geometry && museum.geometry.coordinates && museum.properties) {
-                        coords = museum.geometry.coordinates;
-                        props = museum.properties;
-                    }
-                    // Handle PostGIS string format like "SRID=4326;POINT (-0.1278 51.5074)"
-                    else if (museum.geometry && typeof museum.geometry === 'string' && museum.properties) {
-                        const match = museum.geometry.match(/POINT\s*\s*([\s+])\s+([\s]+)\s*/); 
-                        if (match) {
-                            coords = [parseFloat(match[1]), parseFloat(match[2])];
-                            props = museum.properties;
-                        }
-                    }
-                    // Handle direct object format
-                    else if (museum.latitude && museum.longitude) {
-                        coords = [museum.longitude, museum.latitude];
-                        props = museum;
-                    }
-                    // Handle properties with lat/lng
-                    else if (museum.properties && museum.properties.latitude && museum.properties.longitude) {
-                        coords = [museum.properties.longitude, museum.properties.latitude];
-                        props = museum.properties;
-                    }
-
-                    if (!coords || coords.length < 2) {
-                        console.warn(`Invalid coordinates for museum ${index}:`, museum);
-                        return;
-                    }
-
-                    if (!props || !props.name) {
-                        console.warn(`Invalid properties for museum ${index}:`, museum);
-                        return;
-                    }
-
-                    // Create marker
-                    const lat = coords[1];
-                    const lng = coords[0];
-                    const visitors = props.visitors || 0;
-                    const radius = 12;
-
-                    const marker = L.circleMarker([lat, lng], {
-                        radius: radius,
-                        fillColor: getMuseumColor(props.museum_type),
-                        color: '#ffffff',
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    });
-
-                    // Add popup
-                    const popupContent = `
-                        <div>
-                            <h6>${props.name}, ${props.city || 'Unknown'}</h6>
-                            <p><strong>Country:</strong> ${props.country || 'Unknown'}</p>
-                            <p><strong>Visitors:</strong> ${visitors.toLocaleString()}</p>
-                            <p><strong>Type:</strong> ${props.museum_type || 'Unknown'}</p>
-                            <p><strong>Admission price:</strong> €${props.admission || 'Unknown'}</p>
-                            <p><strong>Established:</strong> ${props.established || 'Unknown'}</p>
-                            <p><strong>Opening Hours:</strong> ${props.time_opened || 'Unknown'} - ${props.time_closed || 'Unknown'}</p>
-                        </div>
-                    `;
-
-                    marker.bindPopup(popupContent);
-
-                    //setting up onClick for nearby museums function
-                    marker.on('click', () => {
-                        if (proximityMode) runProximitySearch(museum);
-                    });
-
-                    //setting up onClick for within bounds function
-                    marker.on('click', () => {
-                        if (boundsMode) runBoundsSearch(museum);
-                    });
-
-                    // Add event listeners
-                    marker.on('mouseover', () => showFeatureInfo(props));
-                    marker.on('mouseout', hideFeatureInfo);
-
-                    museumsLayer.addLayer(marker);
-                    displayed++;
-
-                } catch (error) {
-                    console.error(`Error displaying museum ${index}:`, error, museum);
-                }
-            });
-
-            console.log(` Successfully displayed ${displayed} museums`);
-        }
-
-        // Display functions - free museums
-        function displayFreeMuseums(museums) {
-            console.log('Displaying museums:', museums.length);
-            freeLayer.clearLayers();
-
-            if (!Array.isArray(museums)) {
-                console.warn('Museums data is not an array:', museums);
-                return;
-            }
-
-            let displayed = 0;
-
-            museums.forEach((museum, index) => {
-                try {
-                    let coords = null;
-                    let props = null;
-
-                    // Handle GeoJSON format
-                    if (museum.geometry && museum.geometry.coordinates && museum.properties) {
-                        coords = museum.geometry.coordinates;
-                        props = museum.properties;
-                    }
-                    // Handle PostGIS string format like "SRID=4326;POINT (-0.1278 51.5074)"
-                    else if (museum.geometry && typeof museum.geometry === 'string' && museum.properties) {
-                        const match = museum.geometry.match(/POINT\s*\s*([\s+])\s+([\s]+)\s*/); 
-                        if (match) {
-                            coords = [parseFloat(match[1]), parseFloat(match[2])];
-                            props = museum.properties;
-                        }
-                    }
-                    // Handle direct object format
-                    else if (museum.latitude && museum.longitude) {
-                        coords = [museum.longitude, museum.latitude];
-                        props = museum;
-                    }
-                    // Handle properties with lat/lng
-                    else if (museum.properties && museum.properties.latitude && museum.properties.longitude) {
-                        coords = [museum.properties.longitude, museum.properties.latitude];
-                        props = museum.properties;
-                    }
-
-                    if (!coords || coords.length < 2) {
-                        console.warn(`Invalid coordinates for museum ${index}:`, museum);
-                        return;
-                    }
-
-                    if (!props || !props.name) {
-                        console.warn(`Invalid properties for museum ${index}:`, museum);
-                        return;
-                    }
-
-                    // Create marker
-                    const lat = coords[1];
-                    const lng = coords[0];
-                    const visitors = props.visitors || 0;
-                    const radius = 12;
-
-                    const marker = L.circleMarker([lat, lng], {
-                        radius: radius,
-                        fillColor: getMuseumColor(props.museum_type),
-                        color: '#ffffff',
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    });
-
-                    // Add popup
-                    const popupContent = `
-                        <div>
-                            <h6>${props.name}, ${props.city || 'Unknown'}</h6>
-                            <p><strong>Country:</strong> ${props.country || 'Unknown'}</p>
-                            <p><strong>Visitors:</strong> ${visitors.toLocaleString()}</p>
-                            <p><strong>Type:</strong> ${props.museum_type || 'Unknown'}</p>
-                            <p><strong>Admission price:</strong> €${props.admission || 'Unknown'}</p>
-                            <p><strong>Established:</strong> ${props.established || 'Unknown'}</p>
-                            <p><strong>Opening Hours:</strong> ${props.time_opened || 'Unknown'} - ${props.time_closed || 'Unknown'}</p>
-                        </div>
-                    `;
-                    //admissiona dn admission dont work 100% keep working on this
-
-                    marker.bindPopup(popupContent);
-
-                    //setting up onClick for nearby museums function
-                    marker.on('click', () => {
-                        if (proximityMode) runProximitySearch(museum);
-                    });
-
-                    //setting up onClick for within bounds function
-                    marker.on('click', () => {
-                        if (boundsMode) runBoundsSearch(museum);
-                    });
-
-                    // Add event listeners
-                    marker.on('mouseover', () => showFeatureInfo(props));
-                    marker.on('mouseout', hideFeatureInfo);
-
-                    museumsLayer.addLayer(marker);
-                    displayed++;
-
-                } catch (error) {
-                    console.error(`Error displaying museum ${index}:`, error, museum);
-                }
-            });
-
-            console.log(` Successfully displayed ${displayed} museums`);
-        }
 
         // Update summary
         function updateResultsSummary() {
@@ -774,6 +566,13 @@
 
             if (museumAdmMin && museumAdmMin.value) museumFilters.admission_min = museumAdmMin.value;
             if (museumAdmMax && museumAdmMax.value) museumFilters.admission_max = museumAdmMax.value;
+
+            // established filters
+            const museumEstMin = document.getElementById('established-min');
+            const museumEstMax = document.getElementById('established-max');
+
+            if (museumEstMin && museumEstMin.value) museumFilters.established_min = museumEstMin.value;
+            if (museumEstMax && museumEstMax.value) museumFilters.established_max = museumEstMax.value;
 
             // Category filters
             const city = document.getElementById('city-filter');
@@ -832,32 +631,6 @@
             } else {
                 if (map.hasLayer(museumsLayer)) {
                     map.removeLayer(museumsLayer);
-                }
-            }
-        }
-
-        function toggleLargeMuseumsLayer() {
-            const checkbox = document.getElementById('large-museums');
-            if (checkbox && checkbox.checked) {
-                if (!map.hasLayer(largeLayer)) {
-                    map.addLayer(largeLayer);
-                }
-            } else {
-                if (map.hasLayer(largeLayer)) {
-                    map.removeLayer(largeLayer);
-                }
-            }
-        }
-
-        function toggleFreeMuseumsLayer() {
-            const checkbox = document.getElementById('free-museums');
-            if (checkbox && checkbox.checked) {
-                if (!map.hasLayer(freeLayer)) {
-                    map.addLayer(freeLayer);
-                }
-            } else {
-                if (map.hasLayer(freeLayer)) {
-                    map.removeLayer(freeLayer);
                 }
             }
         }

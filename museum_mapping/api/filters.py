@@ -16,6 +16,7 @@ class MuseumFilter(filters.FilterSet):
     # established filters
     established_min = filters.NumberFilter(field_name="established", lookup_expr='gte')
     established_max = filters.NumberFilter(field_name="established", lookup_expr='lte')
+    established_range = filters.RangeFilter(field_name="established")
 
     # Geographic filters
     city = filters.CharFilter(lookup_expr='icontains')
@@ -25,8 +26,8 @@ class MuseumFilter(filters.FilterSet):
     museum_type = filters.MultipleChoiceFilter(choices=Museum._meta.get_field('museum_type').choices)
 
     # Custom method filters
-    large_museums = filters.BooleanFilter(method='filter_large_museums')
-    free = filters.BooleanFilter(method='filter_free_museums')
+    #large_museums = filters.BooleanFilter(method='filter_large_museums')
+    #free = filters.BooleanFilter(method='filter_free_museums')
 
     class Meta:
         model = Museum
@@ -35,14 +36,16 @@ class MuseumFilter(filters.FilterSet):
             'elevation': ['gte', 'lte'],
         }
 
+    """
     def filter_large_museums(self, queryset, name, value):
-        """Filter for museums with visitors > 150,000 """
+        """"""Filter for museums with visitors > 150,000 """"""
         if value:
             return queryset.filter(visitors__gte=150000)
         return queryset
 
-    def filter_free_museums(self, queryset, name, value):
-        """Filter for museums with admission = 0 """
+    def filter_free_museums(self, queryset, value):
+        """"""Filter for museums with admission = 0 """"""
         if value:
             return queryset.filter(admission__lte=0.0)
         return queryset
+    """
