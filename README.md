@@ -7,7 +7,7 @@
 3. Navigate into museums_mapping folder
 4. Launch docker
 5. Build the container<br>
-   `docker compose build`
+   `docker compose build`<br>
    `docker compose up`
 6. Check that all aspects are running<br>
    `docker compose ps`
